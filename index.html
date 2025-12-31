@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goodbye 2025, Hello 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Orbitron:wght@900&family=Rajdhani:wght@300;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #111;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: sans-serif;
+            color: white;
+        }
+
+        #stage {
+            position: relative;
+            width: 100vw;
+            height: 40vh; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+        }
+
+        /* 2025 (Old Year) */
+        .year-old {
+            position: absolute;
+            font-family: 'Abril Fatface', cursive; 
+            font-size: 25vw;
+            color: #8a8a8a;
+            text-shadow: 4px 4px 0px #333;
+            cursor: default;
+            display: flex;
+            z-index: 10;
+        }
+
+        .digit-old {
+            display: inline-block;
+            transition: transform 0.1s;
+        }
+
+        /* 2026 (New Year) */
+        .year-new {
+            position: absolute;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0;
+            background: linear-gradient(to bottom, #fff, #ffcc00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            filter: drop-shadow(0 0 20px #ffcc00);
+            opacity: 0;
+            z-index: 20;
+            transform: scale(0);
+        }
+
+        /* Quote Section */
+        #quote-box {
+            margin-top: 2rem;
+            height: 100px;
+            width: 80%;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 1s ease-in;
+            z-index: 50;
+        }
+
+        .quote-text {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: clamp(1.2rem, 4vw, 2rem);
+            color: #fff;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .quote-author {
+            display: block;
+            margin-top: 10px;
+            font-size: 1rem;
+            color: #ffcc00;
+            font-style: italic;
+        }
+
+        /* Button */
+        #trigger-btn {
+            margin-top: 30px;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.3s;
+            z-index: 100;
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: btnPulse 2s infinite;
+        }
+
+        @keyframes btnPulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
+            70% { box-shadow: 0 0 0 20px rgba(255, 255, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        }
+
+        #trigger-btn:hover {
+            background: white;
+            color: #111;
+            box-shadow: 0 0 20px white;
+            animation: none;
+        }
+
+        /* Animations */
+        .fall-down {
+            animation: gravity 1.5s forwards ease-in;
+        }
+
+        @keyframes gravity {
+            0% { transform: translateY(0) rotate(0deg); }
+            20% { transform: translateY(-20px) rotate(-5deg); }
+            100% { transform: translateY(120vh) rotate(45deg); opacity: 0; }
+        }
+
+        .zoom-in {
+            animation: superZoom 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes superZoom {
+            0% { font-size: 1vw; opacity: 0; transform: scale(0) rotate(-10deg); filter: blur(20px); }
+            70% { font-size: 25vw; opacity: 1; transform: scale(1.1) rotate(0deg); filter: blur(0px) drop-shadow(0 0 50px #ffcc00); }
+            100% { font-size: 25vw; opacity: 1; transform: scale(1); }
+        }
+
+        .shockwave {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,204,0,0) 70%);
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            animation: shockwaveExpand 0.8s ease-out forwards;
+        }
+
+        @keyframes shockwaveExpand {
+            0% { width: 10px; height: 10px; opacity: 1; }
+            100% { width: 200vw; height: 200vw; opacity: 0; }
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            z-index: 5;
+        }
+
+        .fade-in-text {
+            animation: textFade 4s infinite;
+        }
+
+        @keyframes textFade {
+            0% { opacity: 0; transform: translateY(10px); }
+            20% { opacity: 1; transform: translateY(0); }
+            80% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bg-music" loop>
+        <source src="song.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="stage">
+        <div class="year-old" id="year2025">
+            <span class="digit-old" style="transition-delay: 0.0s">2</span>
+            <span class="digit-old" style="transition-delay: 0.1s">0</span>
+            <span class="digit-old" style="transition-delay: 0.2s">2</span>
+            <span class="digit-old" style="transition-delay: 0.05s">5</span>
+        </div>
+        <div class="year-new" id="year2026">2026</div>
+    </div>
+
+    <div id="quote-box">
+        <div id="quote-content"></div>
+    </div>
+
+    <button id="trigger-btn" onclick="startTransition()">Launch New Era</button>
+
+    <script>
+        const quotes = [
+            { text: "The future belongs to those who believe in the beauty of their dreams.", author: "- Eleanor Roosevelt" },
+            { text: "Your time is now. Make 2026 legendary.", author: "- Future Self" },
+            { text: "Don't look back. You're not going that way.", author: "- 2026 Vision" },
+            { text: "New Year. New Chapter. New Verse.", author: "- Unknown" },
+            { text: "Act as if what you do makes a difference. It does.", author: "- William James" }
+        ];
+
+        let quoteIndex = 0;
+
+        function startTransition() {
+            const btn = document.getElementById('trigger-btn');
+            const digits = document.querySelectorAll('.digit-old');
+            const newYear = document.getElementById('year2026');
+            const quoteBox = document.getElementById('quote-box');
+            const music = document.getElementById('bg-music');
+
+            // --- AUDIO PLAY LOGIC ---
+            // We play immediately on click. 
+            // If the internet is slow, it might take a moment to buffer.
+            music.volume = 0.5; 
+            music.play().then(() => {
+                console.log("Audio playing...");
+            }).catch(error => {
+                console.log("Audio failed. Check internet or file path.", error);
+                alert("Music couldn't load! (Check internet connection or use a local 'song.mp3' file)");
+            });
+
+            // Hide Button
+            btn.style.opacity = '0';
+            btn.style.pointerEvents = 'none';
+
+            // Animate 2025 Falling
+            digits.forEach(digit => {
+                const randomRot = (Math.random() - 0.5) * 100;
+                digit.style.transform = `rotate(${randomRot}deg)`;
+                digit.classList.add('fall-down');
+            });
+
+            // Trigger 2026
+            setTimeout(() => {
+                const wave = document.createElement('div');
+                wave.classList.add('shockwave');
+                document.body.appendChild(wave);
+
+                newYear.classList.add('zoom-in');
+                
+                document.body.style.backgroundColor = '#222';
+                setTimeout(() => document.body.style.backgroundColor = '#111', 200);
+
+                fireConfetti();
+
+                // Start quotes
+                setTimeout(() => {
+                    quoteBox.style.opacity = '1';
+                    showNextQuote();
+                    setInterval(showNextQuote, 4000); 
+                }, 1500);
+
+            }, 1000);
+        }
+
+        function showNextQuote() {
+            const contentDiv = document.getElementById('quote-content');
+            const currentQuote = quotes[quoteIndex];
+            contentDiv.classList.remove('fade-in-text');
+            void contentDiv.offsetWidth; 
+            contentDiv.innerHTML = `<div class="quote-text">"${currentQuote.text}"</div><span class="quote-author">${currentQuote.author}</span>`;
+            contentDiv.classList.add('fade-in-text');
+            quoteIndex = (quoteIndex + 1) % quotes.length;
+        }
+
+        function fireConfetti() {
+            const colors = ['#ffcc00', '#00f7ff', '#ff0055', '#ffffff'];
+            for (let i = 0; i < 100; i++) {
+                const conf = document.createElement('div');
+                conf.classList.add('confetti');
+                const x = Math.random() * 100; 
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                conf.style.left = x + 'vw';
+                conf.style.top = '-10px';
+                conf.style.backgroundColor = color;
+                conf.style.transition = `top ${2 + Math.random()}s linear, transform ${2 + Math.random()}s linear`;
+                document.body.appendChild(conf);
+                setTimeout(() => {
+                    conf.style.top = '110vh';
+                    conf.style.transform = `rotate(${Math.random() * 360}deg)`;
+                }, 50);
+            }
+        }
+    </script>
+</body>
+</html>
