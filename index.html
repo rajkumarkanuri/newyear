@@ -2,480 +2,282 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Warp to 2026</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Share+Tech+Mono&family=Rajdhani:wght@300;600&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goodbye 2025, Hello 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Orbitron:wght@900&family=Rajdhani:wght@300;500&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --neon-blue: #00f3ff;
-            --neon-purple: #bc13fe;
-            --gold: #ffd700;
-        }
-
         body {
             margin: 0;
             padding: 0;
-            background-color: #000;
-            overflow: hidden;
+            background-color: #111;
             height: 100vh;
-            font-family: 'Share Tech Mono', monospace;
-            user-select: none;
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
-            touch-action: none; /* Prevents scrolling on mobile */
+            align-items: center;
+            overflow: hidden;
+            font-family: sans-serif;
+            color: white;
         }
 
-        #starfield {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
+        #stage {
+            position: relative;
+            width: 100vw;
+            height: 40vh; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
         }
 
-        #ui-layer {
+        /* 2025 (Old Year) */
+        .year-old {
             position: absolute;
+            font-family: 'Abril Fatface', cursive; 
+            font-size: 25vw;
+            color: #8a8a8a;
+            text-shadow: 4px 4px 0px #333;
+            cursor: default;
+            display: flex;
             z-index: 10;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            pointer-events: none;
         }
 
-        /* --- YEAR DISPLAYS --- */
-        .year-display {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 20vw;
-            line-height: 1;
-            position: absolute;
+        .digit-old {
+            display: inline-block;
             transition: transform 0.1s;
-            /* Default Centering */
-            top: 50%;
-            transform: translateY(-50%);
         }
 
-        #year-2025 {
-            background: linear-gradient(to bottom, #555, #222);
+        /* 2026 (New Year) */
+        .year-new {
+            position: absolute;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0;
+            background: linear-gradient(to bottom, #fff, #ffcc00);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-shadow: 0px 5px 10px rgba(0,0,0,0.8);
-            opacity: 1;
-        }
-
-        #year-2026 {
+            filter: drop-shadow(0 0 20px #ffcc00);
             opacity: 0;
-            transform: translateY(-50%) scale(0);
-            color: white;
-            text-shadow: 0 0 10px var(--neon-blue), 0 0 40px var(--neon-purple);
-        }
-
-        /* --- WARP BUTTON --- */
-        .warp-btn-container {
-            position: absolute;
-            bottom: 15%; 
-            pointer-events: auto;
-            text-align: center;
             z-index: 20;
+            transform: scale(0);
         }
 
-        #warp-btn {
-            position: relative;
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.5);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            color: var(--neon-blue);
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            overflow: hidden;
-            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        #warp-progress {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 0%;
-            background: var(--neon-blue);
-            opacity: 0.5;
-            transition: height 0.1s linear;
-        }
-
-        #btn-text { position: relative; z-index: 2; pointer-events: none; }
-
-        /* --- MESSAGES --- */
-        #message-area {
-            position: absolute;
-            bottom: 30%; /* Positioned above button */
-            width: 90%;
+        /* Quote Section */
+        #quote-box {
+            margin-top: 2rem;
+            height: 100px;
+            width: 80%;
             text-align: center;
-            height: 60px;
-        }
-
-        #system-log {
-            color: var(--neon-blue);
-            font-size: 1.2rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            opacity: 0.8;
-            text-shadow: 0 0 5px var(--neon-blue);
-        }
-
-        #quote-container {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 1.5rem;
-            color: white;
             opacity: 0;
-            transition: opacity 1s ease-in-out;
-            text-shadow: 0 0 10px rgba(255,255,255,0.5);
-            display: none; 
+            transition: opacity 1s ease-in;
+            z-index: 50;
         }
 
-        .author {
+        .quote-text {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: clamp(1.2rem, 4vw, 2rem);
+            color: #fff;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .quote-author {
             display: block;
-            font-size: 0.9rem;
-            color: var(--neon-purple);
-            margin-top: 5px;
-            letter-spacing: 1px;
+            margin-top: 10px;
+            font-size: 1rem;
+            color: #ffcc00;
             font-style: italic;
         }
 
-        .finale-text {
-            font-family: 'Orbitron', sans-serif !important;
-            font-size: 3rem !important;
-            color: var(--gold) !important;
-            font-weight: 900;
-            text-shadow: 0 0 20px var(--gold), 0 0 40px red !important;
-            letter-spacing: 2px;
-        }
-
-        /* --- FOOTER CREDIT --- */
-        .credit-footer {
-            position: fixed;
-            bottom: 20px;
-            width: 100%;
-            text-align: center;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 10px;
-            letter-spacing: 3px;
-            color: var(--neon-blue);
-            opacity: 0.5;
-            z-index: 50;
-            pointer-events: none;
+        /* Button */
+        #trigger-btn {
+            margin-top: 30px;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.3s;
+            z-index: 100;
+            font-family: 'Orbitron', sans-serif;
             text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: btnPulse 2s infinite;
         }
 
-        /* --- MOBILE ADJUSTMENTS --- */
-        @media (max-width: 600px) {
-            .year-display { 
-                font-size: 25vw; 
-                /* FIX: Move year higher on mobile so it's not "down" */
-                top: 40% !important; 
-                transform: translateY(-50%);
-            }
-            #warp-btn { width: 100px; height: 100px; }
-            .finale-text { font-size: 2rem !important; }
-            #message-area { bottom: 32%; } /* Adjust message spacing */
+        @keyframes btnPulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
+            70% { box-shadow: 0 0 0 20px rgba(255, 255, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
         }
 
-        /* --- UTILS --- */
-        .shake { animation: shake-anim 0.5s cubic-bezier(.36,.07,.19,.97) both infinite; }
-        @keyframes shake-anim {
-            10%, 90% { transform: translate3d(-2px, 0, 0); }
-            20%, 80% { transform: translate3d(4px, 0, 0); }
-            30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
-            40%, 60% { transform: translate3d(6px, 0, 0); }
+        #trigger-btn:hover {
+            background: white;
+            color: #111;
+            box-shadow: 0 0 20px white;
+            animation: none;
         }
 
-        #flash-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: white; opacity: 0; pointer-events: none;
-            z-index: 100; transition: opacity 2s ease-out;
+        /* Animations */
+        .fall-down {
+            animation: gravity 1.5s forwards ease-in;
         }
 
-        .float { animation: float 6s ease-in-out infinite; }
-        @keyframes float {
-            0% { transform: translateY(-50%) scale(1); }
-            50% { transform: translateY(calc(-50% - 20px)) scale(1.05); }
-            100% { transform: translateY(-50%) scale(1); }
+        @keyframes gravity {
+            0% { transform: translateY(0) rotate(0deg); }
+            20% { transform: translateY(-20px) rotate(-5deg); }
+            100% { transform: translateY(120vh) rotate(45deg); opacity: 0; }
+        }
+
+        .zoom-in {
+            animation: superZoom 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes superZoom {
+            0% { font-size: 1vw; opacity: 0; transform: scale(0) rotate(-10deg); filter: blur(20px); }
+            70% { font-size: 25vw; opacity: 1; transform: scale(1.1) rotate(0deg); filter: blur(0px) drop-shadow(0 0 50px #ffcc00); }
+            100% { font-size: 25vw; opacity: 1; transform: scale(1); }
+        }
+
+        .shockwave {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,204,0,0) 70%);
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            animation: shockwaveExpand 0.8s ease-out forwards;
+        }
+
+        @keyframes shockwaveExpand {
+            0% { width: 10px; height: 10px; opacity: 1; }
+            100% { width: 200vw; height: 200vw; opacity: 0; }
         }
 
         .confetti {
             position: absolute;
-            width: 10px; height: 10px;
-            background-color: #f00; z-index: 50;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            z-index: 5;
+        }
+
+        .fade-in-text {
+            animation: textFade 4s infinite;
+        }
+
+        @keyframes textFade {
+            0% { opacity: 0; transform: translateY(10px); }
+            20% { opacity: 1; transform: translateY(0); }
+            80% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-10px); }
         }
     </style>
 </head>
 <body>
 
-    <audio id="sfx-charge" preload="auto">
-        <source src="https://cdn.pixabay.com/download/audio/2022/03/24/audio_078267a032.mp3?filename=sci-fi-charge-up-37410.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="sfx-warp" preload="auto">
-        <source src="song2.mp3" type="audio/mpeg">
+    <audio id="bg-music" loop>
+        <source src="song.mp3" type="audio/mpeg">
     </audio>
 
-    <canvas id="starfield"></canvas>
-    <div id="flash-overlay"></div>
-
-    <div id="ui-layer">
-        <div id="year-2025" class="year-display">2025</div>
-        <div id="year-2026" class="year-display">2026</div>
-        
-        <div id="message-area">
-            <div id="system-log">System Ready</div>
-            <div id="quote-container"></div>
+    <div id="stage">
+        <div class="year-old" id="year2025">
+            <span class="digit-old" style="transition-delay: 0.0s">2</span>
+            <span class="digit-old" style="transition-delay: 0.1s">0</span>
+            <span class="digit-old" style="transition-delay: 0.2s">2</span>
+            <span class="digit-old" style="transition-delay: 0.05s">5</span>
         </div>
+        <div class="year-new" id="year2026">2026</div>
     </div>
 
-    <div class="warp-btn-container">
-        <div id="warp-btn">
-            <div id="warp-progress"></div>
-            <span id="btn-text">HOLD<br>TO WARP</span>
-        </div>
+    <div id="quote-box">
+        <div id="quote-content"></div>
     </div>
 
-    <div class="credit-footer">
-        Designed by Rajkumar
-    </div>
+    <button id="trigger-btn" onclick="startTransition()">Launch New Era</button>
 
     <script>
-        // --- 1. DATA ---
         const quotes = [
-            { text: "The future belongs to those who prepare for it today.", author: "Malcolm X" },
-            { text: "Your potential is endless.", author: "2026 Vision" },
-            { text: "This is the beginning of anything you want.", author: "New Year" }
+            { text: "The future belongs to those who believe in the beauty of their dreams.", author: "- Eleanor Roosevelt" },
+            { text: "Your time is now. Make 2026 legendary.", author: "- Future Self" },
+            { text: "Don't look back. You're not going that way.", author: "- 2026 Vision" },
+            { text: "New Year. New Chapter. New Verse.", author: "- Unknown" },
+            { text: "Act as if what you do makes a difference. It does.", author: "- William James" }
         ];
 
-        // --- 2. MOBILE AUDIO FIX ---
-        const sfxCharge = document.getElementById('sfx-charge');
-        const sfxWarp = document.getElementById('sfx-warp');
-        sfxCharge.volume = 0.5;
-        let audioUnlocked = false;
-
-        function unlockAudio() {
-            if (!audioUnlocked) {
-                // Play silent brief moment to unlock
-                sfxWarp.play().then(() => { sfxWarp.pause(); sfxWarp.currentTime = 0; }).catch((e) => {});
-                sfxCharge.play().then(() => { sfxCharge.pause(); sfxCharge.currentTime = 0; }).catch((e) => {});
-                audioUnlocked = true;
-            }
-        }
-
-        // --- 3. STARFIELD ENGINE ---
-        const canvas = document.getElementById('starfield');
-        const ctx = canvas.getContext('2d');
-        let width, height;
-        let stars = [];
-        const numStars = 800;
-        let speed = 0.5;
-        let warpSpeed = false;
-
-        function resize() {
-            width = window.innerWidth;
-            height = window.innerHeight;
-            canvas.width = width;
-            canvas.height = height;
-        }
-        window.addEventListener('resize', resize);
-        resize();
-
-        class Star {
-            constructor() { this.reset(); }
-            reset() {
-                this.x = (Math.random() - 0.5) * width * 2;
-                this.y = (Math.random() - 0.5) * height * 2;
-                this.z = Math.random() * width;
-                this.pz = this.z;
-            }
-            update() {
-                this.z -= speed;
-                if (this.z <= 1) {
-                    this.reset();
-                    this.z = width;
-                    this.pz = this.z;
-                }
-            }
-            draw() {
-                let x = (this.x / this.z) * width/2 + width/2;
-                let y = (this.y / this.z) * height/2 + height/2;
-                let px = (this.x / this.pz) * width/2 + width/2;
-                let py = (this.y / this.pz) * height/2 + height/2;
-                this.pz = this.z;
-                let opacity = 1 - this.z / width;
-                ctx.beginPath();
-                ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
-                ctx.lineWidth = warpSpeed ? 3 : 1;
-                ctx.moveTo(px, py);
-                ctx.lineTo(x, y);
-                ctx.stroke();
-            }
-        }
-        for(let i=0; i<numStars; i++) stars.push(new Star());
-        function animateStars() {
-            ctx.fillStyle = warpSpeed ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.8)';
-            ctx.fillRect(0, 0, width, height);
-            stars.forEach(star => { star.update(); star.draw(); });
-            requestAnimationFrame(animateStars);
-        }
-        animateStars();
-
-        // --- 4. INTERACTION LOGIC ---
-        const btn = document.getElementById('warp-btn');
-        const progress = document.getElementById('warp-progress');
-        const btnText = document.getElementById('btn-text');
-        const uiLayer = document.getElementById('ui-layer');
-        const year2025 = document.getElementById('year-2025');
-        const year2026 = document.getElementById('year-2026');
-        const flash = document.getElementById('flash-overlay');
-        const log = document.getElementById('system-log');
-        const quoteContainer = document.getElementById('quote-container');
-        
-        let holding = false;
-        let charge = 0;
-        let chargeComplete = false;
         let quoteIndex = 0;
 
-        const startHold = (e) => {
-            if(chargeComplete) return;
-            unlockAudio(); // Unlock audio on first touch
-            holding = true;
-            warpSpeed = true;
-            speed = 40;
-            
-            sfxCharge.currentTime = 0;
-            sfxCharge.play().catch(e => {});
+        function startTransition() {
+            const btn = document.getElementById('trigger-btn');
+            const digits = document.querySelectorAll('.digit-old');
+            const newYear = document.getElementById('year2026');
+            const quoteBox = document.getElementById('quote-box');
+            const music = document.getElementById('bg-music');
 
-            uiLayer.classList.add('shake');
-            btnText.innerHTML = "CHARGING...";
-            log.innerHTML = "HYPERDRIVE ENGAGED";
-        };
+            // --- AUDIO PLAY LOGIC ---
+            // We play immediately on click. 
+            // If the internet is slow, it might take a moment to buffer.
+            music.volume = 0.5; 
+            music.play().then(() => {
+                console.log("Audio playing...");
+            }).catch(error => {
+                console.log("Audio failed. Check internet or file path.", error);
+                alert("Music couldn't load! (Check internet connection or use a local 'song.mp3' file)");
+            });
 
-        const endHold = (e) => {
-            if(chargeComplete) return;
-            holding = false;
-            warpSpeed = false;
-            speed = 0.5;
-            
-            sfxCharge.pause();
-            sfxCharge.currentTime = 0;
-            
-            uiLayer.classList.remove('shake');
-            btnText.innerHTML = "HOLD<br>TO WARP";
-            log.innerHTML = "SYSTEM READY";
-        };
+            // Hide Button
+            btn.style.opacity = '0';
+            btn.style.pointerEvents = 'none';
 
-        btn.addEventListener('mousedown', startHold);
-        btn.addEventListener('touchstart', startHold);
-        window.addEventListener('mouseup', endHold);
-        window.addEventListener('touchend', endHold);
+            // Animate 2025 Falling
+            digits.forEach(digit => {
+                const randomRot = (Math.random() - 0.5) * 100;
+                digit.style.transform = `rotate(${randomRot}deg)`;
+                digit.classList.add('fall-down');
+            });
 
-        function gameLoop() {
-            if (holding && !chargeComplete) {
-                charge += 1.5;
-                let jitter = charge / 5;
-                // Updated translate logic to respect centered position
-                year2025.style.transform = `translate(-50%, -50%) translate(${Math.random()*jitter - jitter/2}px, ${Math.random()*jitter - jitter/2}px) scale(${1 - charge/200})`;
-                year2025.style.opacity = (100 - charge) / 100;
-            } else if (!holding && charge > 0 && !chargeComplete) {
-                charge -= 3;
-                year2025.style.transform = `translate(-50%, -50%) scale(1)`;
-                year2025.style.opacity = 1;
-            }
-            if (charge < 0) charge = 0;
-            if (charge > 100) charge = 100;
-            progress.style.height = charge + '%';
-
-            if (charge >= 100 && !chargeComplete) activateWarp();
-            requestAnimationFrame(gameLoop);
-        }
-        gameLoop();
-
-        // --- 5. WARP SEQUENCE ---
-        function activateWarp() {
-            chargeComplete = true;
-            uiLayer.classList.remove('shake');
-            sfxCharge.pause();
-            sfxWarp.play();
-
-            speed = 100;
-            btnText.innerHTML = "WARP";
-            log.innerHTML = "ENTERING 2026...";
-            btn.style.opacity = 0;
-            flash.style.opacity = 1;
-
+            // Trigger 2026
             setTimeout(() => {
-                year2025.style.display = 'none';
-                year2026.style.opacity = 1;
-                // year2026 uses CSS transform-origin logic, so we reset transform to allow float animation
-                year2026.style.transform = 'translateY(-50%) scale(1)'; 
-                year2026.classList.add('float');
-                
-                log.innerHTML = "WELCOME TO THE FUTURE";
-                log.style.color = "white";
-                
-                flash.style.opacity = 0;
-                speed = 2;
-                warpSpeed = false;
-                
-                setTimeout(() => {
-                   log.style.opacity = 0; 
-                   setTimeout(() => {
-                       log.style.display = 'none';
-                       quoteContainer.style.display = 'block';
-                       void quoteContainer.offsetWidth;
-                       showNextQuote();
-                   }, 500);
-                }, 3000);
+                const wave = document.createElement('div');
+                wave.classList.add('shockwave');
+                document.body.appendChild(wave);
 
-            }, 1500);
-        }
+                newYear.classList.add('zoom-in');
+                
+                document.body.style.backgroundColor = '#222';
+                setTimeout(() => document.body.style.backgroundColor = '#111', 200);
 
-        // --- 6. FINALE ---
-        function showNextQuote() {
-            if (quoteIndex >= quotes.length) {
-                showFinale();
-                return;
-            }
-            quoteContainer.style.opacity = 0;
-            setTimeout(() => {
-                const q = quotes[quoteIndex];
-                quoteContainer.innerHTML = `"${q.text}"<span class="author">- ${q.author}</span>`;
-                quoteContainer.style.opacity = 1;
-                quoteIndex++;
-                setTimeout(showNextQuote, 4000); 
-            }, 1000);
-        }
-
-        function showFinale() {
-            quoteContainer.style.opacity = 0;
-            setTimeout(() => {
-                quoteContainer.innerHTML = "HAPPY NEW YEAR";
-                quoteContainer.classList.add('finale-text'); 
-                quoteContainer.style.opacity = 1;
                 fireConfetti();
+
+                // Start quotes
+                setTimeout(() => {
+                    quoteBox.style.opacity = '1';
+                    showNextQuote();
+                    setInterval(showNextQuote, 4000); 
+                }, 1500);
+
             }, 1000);
+        }
+
+        function showNextQuote() {
+            const contentDiv = document.getElementById('quote-content');
+            const currentQuote = quotes[quoteIndex];
+            contentDiv.classList.remove('fade-in-text');
+            void contentDiv.offsetWidth; 
+            contentDiv.innerHTML = `<div class="quote-text">"${currentQuote.text}"</div><span class="quote-author">${currentQuote.author}</span>`;
+            contentDiv.classList.add('fade-in-text');
+            quoteIndex = (quoteIndex + 1) % quotes.length;
         }
 
         function fireConfetti() {
-            const colors = ['#ffd700', '#00f3ff', '#bc13fe', '#ffffff'];
-            for (let i = 0; i < 150; i++) {
+            const colors = ['#ffcc00', '#00f7ff', '#ff0055', '#ffffff'];
+            for (let i = 0; i < 100; i++) {
                 const conf = document.createElement('div');
                 conf.classList.add('confetti');
                 const x = Math.random() * 100; 
@@ -483,11 +285,11 @@
                 conf.style.left = x + 'vw';
                 conf.style.top = '-10px';
                 conf.style.backgroundColor = color;
-                conf.style.transition = `top ${3 + Math.random()}s linear, transform ${3 + Math.random()}s linear`;
+                conf.style.transition = `top ${2 + Math.random()}s linear, transform ${2 + Math.random()}s linear`;
                 document.body.appendChild(conf);
                 setTimeout(() => {
                     conf.style.top = '110vh';
-                    conf.style.transform = `rotate(${Math.random() * 720}deg)`;
+                    conf.style.transform = `rotate(${Math.random() * 360}deg)`;
                 }, 50);
             }
         }
